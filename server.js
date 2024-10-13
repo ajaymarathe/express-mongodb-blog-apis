@@ -1,15 +1,36 @@
 const express = require("express");
 const mongoose = require("mongoose");
 const bodyParser = require("body-parser");
-const cors = require('cors');
+const cors = require("cors");
+require("dotenv").config();
+const postRoutes = require('./routes/posts');
+
 
 const app = express();
 
-// Middleware 
-app.use(bodyParser.json())
-app.use(cors())
+// Middleware
+app.use(bodyParser.json());
+app.use(cors());
+app.use('/api/posts', postRoutes);
 
-// connect to mongodb
-mongoose.connect('mongodb://localhost:27017/blogAPI', { useNewUrlParser: true, useUnifiedTopology: true })
-.then(() => console.log("MongoDB Connected!"))
-.catch(err => console.log('err:', err))
+// Connect to MongoDB
+mongoose
+  .connect("mongodb://localhost:27017/blogAPI", {
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
+  })
+  .then(() => console.log("MongoDB connected"))
+  .catch((err) => console.log(err));
+
+// Basic route
+app.get("/", (req, res) => {
+  res.send("Welcome to the Blog API");
+});
+
+// Set the port to the one from .env or default to 5000
+const PORT = process.env.PORT || 5001;
+
+// Start server
+app.listen(PORT, () => {
+  console.log(`Server running on port ${PORT}`);
+});
